@@ -17,3 +17,10 @@ let users = [
 server.get('/users', (req, res) => {
   res.status(200).json(users);
 });
+
+server.post('/users', (req, res) => {
+  let user = req.body;
+  user.id = nanoid.nanoid();
+  users.push(user);
+  res.status(201).send('New user created.');
+});
