@@ -50,7 +50,25 @@ server.get('/users/:id', (req, res) => {
   if (found) {
     res.status(200).json(found);
   } else {
-    res.status(404).json({ message: 'Could not find user by that ID.' });
+    res.status(404).json({ message: 'The user with the specified ID does not exist.' });
   }
 
 });
+
+server.delete('/users/:id', (req, res) => {
+  const id = req.params.id;
+  let found;
+  try {
+    found = users.find(user => user.id === id);
+  } catch {
+    res.status(500).json({ errorMessage: "The user could not be removed." });
+  }
+
+  if (found) {
+    users = users.filter(user => user.id !== found.id);
+    res.status(204).end();
+  } else {
+    res.status(404).json({ message: 'The user with the specified ID does not exist.' });
+  }
+
+})
