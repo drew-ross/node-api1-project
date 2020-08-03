@@ -1,9 +1,11 @@
 const express = require('express');
 const nanoid = require('nanoid');
+const cors = require('cors');
 
 const server = express();
 
 server.use(express.json());
+server.use(cors());
 
 const port = 8000;
 server.listen(port, () => console.log('server running...'));
@@ -77,7 +79,7 @@ server.put('/users/:id', (req, res) => {
   const updateUser = req.body;
   let returnUser;
   let found;
-  
+
   if (!updateUser.hasOwnProperty('name') || !updateUser.hasOwnProperty('bio')) {
     res.status(400).json({ errorMessage: "Please provide name and bio for the user." });
   }
