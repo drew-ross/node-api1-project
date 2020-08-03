@@ -22,5 +22,17 @@ server.post('/users', (req, res) => {
   let user = req.body;
   user.id = nanoid.nanoid();
   users.push(user);
-  res.status(201).send('New user created.');
+  res.status(201).json({ message: 'New user created.' });
+});
+
+server.get('/users/:id', (req, res) => {
+  const id = req.params.id;
+  const found = users.find(user => user.id === id);
+
+  if (found) {
+    res.status(200).json(found);
+  } else {
+    res.status(404).json({ message: 'Could not find user by that ID.' });
+  }
+
 });
