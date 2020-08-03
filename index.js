@@ -15,7 +15,11 @@ let users = [
 
 //endpoints
 server.get('/users', (req, res) => {
-  res.status(200).json(users);
+  try {
+    res.status(200).json(users);
+  } catch {
+    res.status(500).json({ errorMessage: 'The users information could not be retrieved.' });
+  }
 });
 
 server.post('/users', (req, res) => {
@@ -23,16 +27,25 @@ server.post('/users', (req, res) => {
 
   if ('name' in user && 'bio' in user) {
     user.id = nanoid.nanoid();
-    users.push(user);
-    res.status(201).json({ message: 'New user created.' });
+    try {
+      users.push(user);
+    } catch {
+      res.status(500).json({ errorMessage: 'There was an error while saving the user to the database.' });
+    }
+    res.status(201).json(user);
   } else {
-    res.status(400).json({ message: '400 Bad request.' });
+    res.status(400).json({ errorMessage: 'Please provide name and bio for the user.' });
   }
 });
 
 server.get('/users/:id', (req, res) => {
   const id = req.params.id;
-  const found = users.find(user => user.id === id);
+  let found;
+  try {
+    found = users.find(user => user.id === id);
+  } catch {
+    res.status(500).json({ errorMessage: "The user information could not be retrieved." });
+  }
 
   if (found) {
     res.status(200).json(found);
