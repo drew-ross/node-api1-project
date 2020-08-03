@@ -70,5 +70,39 @@ server.delete('/users/:id', (req, res) => {
   } else {
     res.status(404).json({ message: 'The user with the specified ID does not exist.' });
   }
+});
 
-})
+server.put('/users/:id', (req, res) => {
+  const id = req.params.id;
+  const updateUser = req.body;
+  let returnUser;
+  let found;
+  
+  if (!updateUser.hasOwnProperty('name') || !updateUser.hasOwnProperty('bio')) {
+    res.status(400).json({ errorMessage: "Please provide name and bio for the user." });
+  }
+
+  try {
+    found = users.find(user => user.id === id);
+  } catch {
+    res.status(500).json({ errorMessage: "The user information could not be modified." });
+  }
+
+  if (found) {
+    users = users.map(user => {
+      if (user.id === found.id) {
+        returnUser = {
+          ...user,
+          name: updateUser.name,
+          bio: updateUser.bio
+        }
+        return returnUser;
+      } else {
+        return user;
+      }
+    });
+    res.status(200).json(returnUser);
+  } else {
+    res.status(404).json({ message: 'The user with the specified ID does not exist.' });
+  }
+});
