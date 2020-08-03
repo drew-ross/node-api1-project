@@ -20,9 +20,14 @@ server.get('/users', (req, res) => {
 
 server.post('/users', (req, res) => {
   let user = req.body;
-  user.id = nanoid.nanoid();
-  users.push(user);
-  res.status(201).json({ message: 'New user created.' });
+
+  if ('name' in user && 'bio' in user) {
+    user.id = nanoid.nanoid();
+    users.push(user);
+    res.status(201).json({ message: 'New user created.' });
+  } else {
+    res.status(400).json({ message: '400 Bad request.' });
+  }
 });
 
 server.get('/users/:id', (req, res) => {
